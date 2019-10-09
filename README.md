@@ -4,7 +4,16 @@ https://github.com/compactr/compactr.js
 
 
 ```js
-// test.js
+// test/index.js
+
+const expect = require('chai').expect;
+const Compactr = require('../');
+
+describe('Data integrity - simple', () => {
+
+});
+
+
 
 describe('Data integrity - partial - multi mixed', () => {
   describe('Boolean + number + string + array + object', () => {
