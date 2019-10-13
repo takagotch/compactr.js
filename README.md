@@ -29,30 +29,76 @@ describe('Data integrity - simple', () => {
   describe('Number' () => {
     const Schema = Compactr.schema({ type: 'number' });
     
-    it();
+    it('should preserve number value and type', () => {
+      expect(Schema.read(Schema.write({ test: 23.23 }).buffer())).to.deep.equal({ test: 23.23 });
+    });
     
-    it();
+    it('should preserve number value and type for negative values', () => {
+      expect(Schema.read(Schema.write({ test: -23.23 }).buffer())).to.deep.equal({ test: -23.23 });
+    });
   });
   
   describe('String', () => {
-  
-  });
-  
-  descirbe('Array', () => {
-  
-  });
-  
-  descirbe('Schema', () => {
-  
-  });
+    describe('Boolean', () => {
+      const Schema = Compactr.schema({ test: { type: 'boolean' }});
+      
+      it('should preserve string value and type', () => {
+        expect(Schema.read(Schema.write({ test: 'hello world' }).buffer())).to.deep.equal({ test: 'hello world' });
+      });
+    });
+    
+    describe('Array', () => {
+      const Schema = Compactr.schema({ test: { type: 'array', items: { type: 'string' } } });
+      
+      it('should preserve array values and types', () => {
+        expect(Schema.write({ test: ['a', 'b', 'c'] }).buffer()).to.deep.equal({ test: ['a', 'b', 'c'] });
+      });
+    });
+    
+    describe('Schema', () => {
+      const Schema = Compactr.schema({ test: { type: 'object', schema: { test: { type: 'number' } } } });
+    
+      it('should preserve object values and types', () => {
+        expect(Schema.read(Schema.write({ test: { test: 23.23 } }).buffer())).to.deep.equal({ test: { test: 23.23 } });
+      });
+    });
 });
 
 describe('Data integrity - multi simple', () => {
   descirbe('Booleans', () => {
     const Schema = Compactr.schema({ test: { type: 'boolean' }, test2: { type: 'boolean' } });
     
+    it('should preserve boolean value and type - false', () => {
+      expect(Schema.read(Schema.write({ test: false, test2: true }).buffer())).to.deep.equal({ test: false, test2: true });
+    });
     
+    it('should skip null or undefined values', () => {
+      epxect(Schema.read({ test: null, test2: false }).buffer()).to.deep.equal({ test2: false });
+    });
+  });
+  
+  descirbe('Numbers', () => {
+    const Schema = Compactr.schema({ test: { type: 'number' }, test2: { type: 'number' } });
     
+    it('should preserve number value and type', () => {
+      expect(Schema.read(Schema.write({ test: 23.23, test2: -97.7 }).buffer())).to.deep.equal({ test: 23.23, test2: -97.7 });
+    });
+  });
+  
+  describe('Strings', () => {
+    const Schema = Compactr.schema({ test: { type: 'string' }, test2: { type: 'string' } });
+    
+    it('should preserve number and type', () => {
+      expect(Schema.read(Schema.write({ test: 23.23, test2: -97.7 )).buffer()).to.deep.equal({ test: 23.23, test2: -97.7 });
+    });
+  });
+  
+  describe('Strings', () => {
+    const Schema = Compactr.schema({ test: { type: 'string' }, test2: { type: 'string' } });
+    
+    it('should preserve string value and type', () => {
+      expect(Schema.read(Schema.write({ test: 'hello world', test2: 'echo' }).buffer())).deep.equal({ test: 'hello world', test2: 'echo'})
+    });
   });
 });
 
